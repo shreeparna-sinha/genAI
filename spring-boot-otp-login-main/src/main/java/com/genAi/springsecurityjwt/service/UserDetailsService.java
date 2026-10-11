@@ -28,16 +28,17 @@ public class UserDetailsService implements org.springframework.security.core.use
 //    }
     
     @Override
-  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-      User user = repository.findByEmail(email);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = repository.findByEmail(email);
 
-      System.out.println("----------------"+ user);
-      if(user==null){
-          user = new User();
-          user.setUserName(user.getPhoneNo());
-          repository.save(user);
-      }
-      return new org.springframework.security.core.userdetails.User(email, user.getPassword(),
-              new ArrayList<>());
-  }
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                new ArrayList<>()
+        );
+    }
 }

@@ -32,8 +32,13 @@ public class UserService {
 	    if (user.getPassword() == null || user.getPassword().isBlank()) {
 	        throw new IllegalArgumentException("Password is required");
 	    }
+	    if (repository.findByEmail(user.getEmail()) != null) {
+	        throw new IllegalArgumentException("Email is already registered");
+	    }
+	    if (repository.findByPhoneNo(user.getPhoneNo()) != null) {
+	        throw new IllegalArgumentException("Phone number is already registered");
+	    }
 	    if (passwordEncoder != null) {
-	        // Hash the password before saving it to the database
 	        user.setPassword(passwordEncoder.encode(user.getPassword()));
 	    }
 	    user.setId(null);
