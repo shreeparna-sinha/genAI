@@ -1,13 +1,16 @@
 package com.genAi.springsecurityjwt.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import com.genAi.springsecurityjwt.model.AuthOtpRequest;
 import com.genAi.springsecurityjwt.model.AuthRequest;
@@ -24,6 +27,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "api/client/auth/")
 @CrossOrigin("*")
+@Validated
 public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -48,7 +52,7 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "requestOtp/{phoneNo}",method = RequestMethod.GET)
-  public Map<String,Object> getOtp_Real(@PathVariable String phoneNo){
+  public Map<String,Object> getOtp_Real(@PathVariable @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Phone number must contain 10 to 15 digits") String phoneNo){
     	Map<String,Object> returnMap=new HashMap<>();
     	 User user = userService.findByPhoneNo(phoneNo);
     	 System.out.println("---------------------- 5");
@@ -73,7 +77,7 @@ public class AuthenticationController {
       
   }
     @RequestMapping(value = "verifyOtp",method = RequestMethod.POST)
-  public Map<String,Object> verifyOtp_Real(@RequestBody AuthOtpRequest auth){
+  public Map<String,Object> verifyOtp_Real(@Valid @RequestBody AuthOtpRequest auth){
       Map<String,Object> returnMap=new HashMap<>();
       try{
           //verify otp
@@ -125,7 +129,7 @@ public class AuthenticationController {
 //    }
     
   @RequestMapping(value = "register",method = RequestMethod.POST)
-  public Map<String,Object> getOtp(@RequestBody User user){
+  public Map<String,Object> getOtp(@Valid @RequestBody User user){
       Map<String,Object> returnMap=new HashMap<>();
       try{
     	  if (userService.isEmailAlreadyRegistered(user.getEmail())
@@ -174,7 +178,7 @@ public class AuthenticationController {
   
   
   @RequestMapping(value = "login",method = RequestMethod.POST)
-public Map<String,Object> verifyOtp(@RequestBody AuthRequest authenticationRequest){
+public Map<String,Object> verifyOtp(@Valid @RequestBody AuthRequest authenticationRequest){
     Map<String,Object> returnMap=new HashMap<>();
     try{
         //verify otp

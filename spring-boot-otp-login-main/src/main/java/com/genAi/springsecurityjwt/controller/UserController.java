@@ -2,20 +2,24 @@ package com.genAi.springsecurityjwt.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.genAi.springsecurityjwt.model.User;
 import com.genAi.springsecurityjwt.service.UserDetailsService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/register")
+@Validated
 public class UserController {
 
     @Autowired
     private UserDetailsService userService;
 
     @PostMapping
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody User user) {
         // Check if the email is already registered
 //        if (userService.isEmailAlreadyRegistered(user.getUserName())) {
 //            return ResponseEntity.badRequest().body("Email is already registered");
