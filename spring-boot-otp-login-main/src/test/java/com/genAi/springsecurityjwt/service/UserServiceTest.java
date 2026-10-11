@@ -78,6 +78,19 @@ class UserServiceTest {
     }
 
     @Test
+    void registerUser_shouldRejectDuplicateEmailAndPhoneNumber() {
+        User user = new User();
+        user.setUserName("john");
+        user.setEmail("john@example.com");
+        user.setPhoneNo("9876543210");
+        user.setPassword("secret123");
+
+        when(userRepository.findByEmail("john@example.com")).thenReturn(new User());
+
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(user));
+    }
+
+    @Test
     void isEmailAlreadyRegistered_shouldReturnFalseForBlankEmail() {
         assertFalse(userService.isEmailAlreadyRegistered(null));
         assertFalse(userService.isEmailAlreadyRegistered("   "));
