@@ -20,16 +20,36 @@ public class UserService {
 	UserRepository repository;
 	
 	public User registerUser(User user) {
+	    if (user == null) {
+	        throw new IllegalArgumentException("User payload is required");
+	    }
+	    if (user.getEmail() == null || user.getEmail().isBlank()) {
+	        throw new IllegalArgumentException("Email is required");
+	    }
+	    if (user.getPhoneNo() == null || user.getPhoneNo().isBlank()) {
+	        throw new IllegalArgumentException("Phone number is required");
+	    }
+	    if (user.getPassword() == null || user.getPassword().isBlank()) {
+	        throw new IllegalArgumentException("Password is required");
+	    }
 	    if (passwordEncoder != null) {
 	        // Hash the password before saving it to the database
 	        user.setPassword(passwordEncoder.encode(user.getPassword()));
 	    }
+	    user.setId(null);
+	    user.setCart(null);
 	    return repository.save(user);
 	}
 	public boolean isEmailAlreadyRegistered(String email) {
+	    if (email == null || email.isBlank()) {
+	            return false;
+        }
         return repository.findByEmail(email)!=null;
     }
 	public User findByPhoneNo(String phoneNo) {
-        return repository.findByPhoneNo(phoneNo);
-    }
+	    if (phoneNo == null || phoneNo.isBlank()) {
+	        return null;
+	    }
+	    return repository.findByPhoneNo(phoneNo);
+	}
 }
