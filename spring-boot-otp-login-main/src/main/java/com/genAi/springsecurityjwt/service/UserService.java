@@ -36,6 +36,8 @@ public class UserService {
 	        // Hash the password before saving it to the database
 	        user.setPassword(passwordEncoder.encode(user.getPassword()));
 	    }
+	    user.setId(null);
+	    user.setCart(null);
 	    return repository.save(user);
 	}
 	public boolean isEmailAlreadyRegistered(String email) {
